@@ -1,5 +1,6 @@
 PIP := venv/bin/pip
 PYTHON3 := venv/bin/python3
+TESTS := venv/bin/pytest -v ./test_controllers.py
 
 clear:
     rm -rf venv
@@ -12,3 +13,6 @@ install_requirements:
 
 run:
     ${PYTHON3} server.py
+
+test:
+    ${TESTS}
