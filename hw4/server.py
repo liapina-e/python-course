@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from dotenv import dotenv_values
 
 app = Flask(__name__)
@@ -25,6 +25,12 @@ def author():
     }
     return jsonify(author)
 
+
+@app.route("/sum")
+def runner():
+    a = request.args.get('a', type=int)
+    b = request.args.get('b', type=int)
+    return jsonify({'sum': a + b})
 
 if __name__ == "__main__":
     app.run(debug=True, port=get_port())
