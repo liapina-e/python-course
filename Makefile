@@ -63,3 +63,21 @@ requirements:
 
 install:
 	cd django_proj && pip install -r requirements.txt
+
+docker-build:
+	cd storage/docker && docker-compose build
+
+docker-up:
+	cd storage/docker && docker-compose up
+
+docker-down:
+	cd storage/docker && docker-compose down
+
+docker-logs:
+	cd storage/docker && docker-compose logs -f
+
+mock-data:
+	cd django_proj && python manage.py create_mock_data
+
+migrate:
+	cd django_proj && python manage.py migrate
