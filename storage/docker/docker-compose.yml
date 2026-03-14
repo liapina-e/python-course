@@ -1,0 +1,76 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: comments_db
+    environment:
+      POSTGRES_DB: comments_db
+      POSTGRES_USER: comments_user
+      POSTGRES_PASSWORD: comments_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U comments_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - comments_network
+    restart: unless-stopped
+
+  backend:
+    build: ../../django_proj
+    container_name: comments_backend
+    command: >
+      sh -c "cp .env.docker .env 2>/dev/null || true &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ../../django_proj:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: comments_db
+      DB_USER: comments_user
+      DB_PASSWORD: comments_password
+      DB_HOST: db
+      DB_PORT: 5432
+      DEBUG: "True"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - comments_network
+    restart: unless-stopped
+
+  test:
+    build: ../../django_proj
+    container_name: comments_test
+    command: >
+      sh -c "cp .env.docker .env 2>/dev/null || true &&
+             python manage.py test comments --noinput"
+    volumes:
+      - ../../django_proj:/app
+    environment:
+      DB_NAME: comments_db
+      DB_USER: comments_user
+      DB_PASSWORD: comments_password
+      DB_HOST: db
+      DB_PORT: 5432
+      DEBUG: "True"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - comments_network
+    profiles:
+      - test
+
+volumes:
+  postgres_data:
+
+networks:
+  comments_network:
+    driver: bridge
