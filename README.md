@@ -62,4 +62,47 @@ docker-compose up --build  # миграции применятся автома�
 - Миграции должны применяться **строго по порядку**
 - При первом запуске обязательно выполнить `migrate`
 - Мок данные создаются **автоматически** при миграции
+
+
+## Homework 7 - Comments Service (Авторизация, тесты и Docker)
+
+### Новые возможности:
+
+#### Авторизация и права доступа
+- Регистрация: `POST /api/auth/register/`
+- Вход: `POST /api/auth/login/`
+- Информация о себе: `GET /api/auth/me/`
+- JWT токены для аутентификации
+
+#### Права доступа
+- Все могут читать посты и комментарии
+- Только автор может редактировать/удалять свои посты и комментарии
+- Администраторы могут редактировать/удалять всё
+- Лайки могут ставить только авторизованные пользователи
+
+#### Тесты
+```bash
+# Запуск тестов локально
+cd django_proj
+python manage.py test comments
+
+# Запуск тестов в Docker
+cd storage/docker
+docker-compose --profile test run test
+```
+
+#### Docker Compose
+```bash
+# Запуск всего приложения
+cd storage/docker
+docker-compose up --build
+
+# Запуск только тестов
+docker-compose --profile test run test
+
+# Запуск в фоне
+docker-compose up -d
+
+# Остановка
+docker-compose down
 ```
