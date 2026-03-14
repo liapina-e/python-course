@@ -63,3 +63,7 @@ docker-compose up --build  # миграции применятся автома�
 - При первом запуске обязательно выполнить `migrate`
 - Мок данные создаются **автоматически** при миграции
 ```
+## Домашние работы:
+- HW1: Python Practice
+- HW4: Python Practice
+- HW5: Comment Service
